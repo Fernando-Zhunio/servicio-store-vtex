@@ -1,0 +1,211 @@
+import { method } from '@vtex/api'
+import slugify from 'slugify'
+
+import { searchMasterdata } from '../resolvers/searchMasterdata'
+import { getStoreBindings } from '../utils/Binding'
+
+const Slugify = (str: string) => {
+  return slugify(str, { lower: true, remove: /[*+~.()'"!:@]/g })
+}
+
+const stripTrailingSlash = (str: string) => {
+  return str.endsWith('/') ? str.slice(0, -1) : str
+}
+
+export const resolvers = {
+  Routes: {
+    getSitemapNovicompu: [
+      method({
+        GET: async (ctx: Context) => {
+          const {
+            clients: { tenant },
+            vtex: { logger },
+          } = ctx
+
+          try {
+            const stores: any = await resolvers.Query.getStores(
+              null,
+              {
+                keyword: ctx.vtex.account,
+                latitude: null,
+                longitude: null,
+              },
+              ctx
+            ).catch((error) => {
+              logger.error({ error, message: 'getSitemap-getStores-error' })
+
+              return null
+            })
+
+            logger.info({ message: 'Cuenta', items: ctx.vtex.account })
+
+            const [storeBindings] = await getStoreBindings(tenant)
+
+            const { canonicalBaseAddress } = storeBindings
+            const baseUrl =
+              canonicalBaseAddress.indexOf('myvtex') === -1
+                ? String(canonicalBaseAddress)
+                : String(ctx.vtex.host)
+
+            const lastMod = new Date().toISOString()
+            const storesMap = ` 
+              <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+              <url> 
+                  <loc>https://ganacell.com</loc>
+                  <lastmod>fer</lastmod>
+                  <changefreq>daily</changefreq>
+                  <priority>0.8</priority>
+               </url>
+                ${stores?.items
+                  .filter((item: any) => {
+                    return !!item.isActive
+                  })
+                  .map((item: any) => {
+                    return `<url>
+                  <loc>https://${stripTrailingSlash(baseUrl)}/store/${Slugify(
+                      `${item.name} ${item.address.state} ${item.address.postalCode}`
+                    )}/${String(item.id).replace('1_', '')}</loc>
+                  <lastmod>${lastMod}</lastmod>
+                  <changefreq>daily</changefreq>
+                  <priority>0.8</priority>
+               </url>`
+                  })
+                  .join('')}
+              </urlset>`
+
+            ctx.set('Content-Type', 'text/xml')
+            ctx.body = storesMap
+            ctx.status = 200
+          } catch (e) {
+            ctx.body = e
+            ctx.status = 500
+          }
+        },
+        POST: async (_ctx: Context) => {},
+      }),
+    ],
+  },
+  Query: {
+    getStores: async (_: any, param: any, ctx: Context) => {
+      const {
+        clients: { hub, sitemap, vbase },
+        vtex: { logger },
+      } = ctx
+
+      const APP_NAME = 'store-locator'
+      const SCHEMA_NAME = 'sitemap'
+
+      const saveInVbase = async () => {
+        try {
+          const res: any = await sitemap.saveIndex()
+
+          if (res?.data?.saveIndex) {
+            await vbase.saveJSON(APP_NAME, SCHEMA_NAME, {
+              alreadyHasSitemap: true,
+            })
+
+            return true
+          }
+
+          return false
+        } catch (err) {
+          logger.error({ error: err, message: 'getStores-saveInBase-error' })
+
+          return false
+        }
+      }
+
+      sitemap.hasSitemap().then((has: any) => {
+        if (has === false) {
+          vbase
+            .getJSON(APP_NAME, SCHEMA_NAME, true)
+            .then((getResponse: any) => {
+              const { alreadyHasSitemap = false } = getResponse ?? {}
+
+              !alreadyHasSitemap && saveInVbase()
+            })
+            .catch((err: any) =>
+              logger.error({ error: err, message: 'getStores-getJSON-error' })
+            )
+        }
+      })
+
+      let result = await hub.getStores(param).catch((error) => {
+        logger.error({
+          error,
+          message: 'getStores-error',
+          param,
+        })
+
+        return null
+      })
+
+      if (!result?.data.length && !param.keyword) {
+        result = await hub.getStores({}).catch((error) => {
+          logger.error({
+            error,
+            message: 'getStores-error',
+            param: {},
+          })
+
+          return null
+        })
+      }
+
+      logger.info({ message: 'getStores', items: result })
+
+      // accounts for different reponse structure for Logistics _search and _searchsellers endpoints
+      const {
+        data,
+        data: { paging = { pages: 0 } },
+      } = result ?? { data: { items: [], paging: { pages: 0 } } }
+
+      const pickuppoints = data.items ? data : { items: data }
+
+      const results = [] as any
+
+      // API will return errors starting at ?page=100
+      const limitPagesTo99 = paging.pages > 99 ? 99 : paging.pages
+
+      for (let i = 2; i <= limitPagesTo99; i++) {
+        results.push(
+          hub.getStores({ ...param, page: i }).catch((error) => {
+            logger.error({
+              error,
+              message: 'getStores-error',
+              param: { ...param, page: i },
+            })
+
+            return null
+          })
+        )
+      }
+
+      const remainingData = await Promise.all(results)
+
+      remainingData.forEach((newResult: any) => {
+        pickuppoints.items.push(...newResult.data.items)
+      })
+
+      // include for usage statistics
+      logger.info({ message: 'getStores', items: pickuppoints?.items?.length })
+
+      return {
+        items: pickuppoints.items
+          .map((item: any) => {
+            return {
+              ...item,
+              address: {
+                ...item.address,
+                country: item.address.acronym,
+              },
+            }
+          })
+          .filter((item: any) => {
+            return !!item.isActive
+          }),
+      }
+    },
+    searchMasterdata,
+  },
+}
