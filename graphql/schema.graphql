@@ -1,0 +1,18 @@
+type Query {
+  searchMasterdata(page: Int, pageSize: Int, where: String): SearchValues
+    @cacheControl(maxAge: MEDIUM, scope: PUBLIC)
+  # getProductsIds: [String]
+  # getProductsNames: [ObjectNameId]
+  # getSkuNames: [ObjectNameId]
+  # getBrandsNames: [ObjectNameId]
+  # getCollectionsNames: [ObjectNameId]
+  # getCategoryName: [ObjectNameId]
+  # getSpecificationName: [ObjectName]
+  # publicAppSettings: Settings @cacheControl(scope: PUBLIC, maxAge: LONG)
+}
+
+type Mutation {
+  saveMasterdata(saveData: SaveValues): ReturnValueSave
+  # updateMasterdata(idBadges: String, saveValues: SaveValues): Boolean
+  # deleteMasterdata(id: String): Boolean
+}
