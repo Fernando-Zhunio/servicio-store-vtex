@@ -89,6 +89,7 @@ export default new Service<Clients, RecorderState, ParamsContext>({
   graphql: {
     resolvers: {
       Query: resolvers.Query,
+      Mutation: resolvers.Mutation,
     },
   },
   routes: resolvers.Routes,

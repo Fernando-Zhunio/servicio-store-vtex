@@ -1,87 +1,58 @@
 {
-  "title": "Tiendas Custom Fz",
-  "description": "Autorización de las tiendas de novicompu",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Stores",
   "type": "object",
   "properties": {
-    "storesPerCity": {
+    "storesForCity": {
       "type": "array",
-      "title": "Todas las Tiendas",
       "items": {
         "type": "object",
-        "title": "Ciudades",
         "properties": {
-          "__editorItemTitle": {
-            "default": "City",
-            "title": "Cambiar el titulo",
-            "type": "string"
-          },
           "city": {
-            "type": "string",
-            "title": "Ciudad",
-            "default": "",
-            "description": "Nombre de la ciudad"
+            "type": "string"
           },
           "stores": {
             "type": "array",
-            "title": "Tiendas",
             "items": {
               "type": "object",
-              "title": "Tienda",
               "properties": {
-                "__editorItemTitle": {
-                  "type": "string",
-                  "title": "Cambiar titulo de la tienda",
-                  "default": "Tienda"
-                },
                 "id": {
-                  "type": "number",
-                  "title": "Id",
-                  "default": 0,
-                  "description": "Id de la tienda"
+                  "type": "string"
                 },
                 "name": {
-                  "type": "string",
-                  "title": "Nombre",
-                  "default": "",
-                  "description": "Nombre de la tienda"
+                  "type": "string"
                 },
                 "schedules": {
-                  "type": "string",
-                  "title": "Horarios",
-                  "default": "",
-                  "description": "Horarios de la tienda"
+                  "type": "string"
                 },
                 "address": {
-                  "type": "string",
-                  "title": "Direccion",
-                  "default": "",
-                  "description": "Direccion de la tienda"
+                  "type": "string"
                 },
                 "latitude": {
-                  "type": "string",
-                  "title": "Latitud",
-                  "default": "",
-                  "description": "Latitud de la tienda"
+                  "type": "string"
                 },
                 "longitude": {
-                  "type": "string",
-                  "title": "Longitud",
-                  "default": "",
-                  "description": "Longitud de la tienda"
+                  "type": "string"
                 },
                 "status": {
-                  "type": "boolean",
-                  "title": "Estado",
-                  "default": true,
-                  "description": "Estado de la tienda"
+                  "type": "boolean"
                 }
-              }
+              },
+              "required": [
+                "id",
+                "name",
+                "schedules",
+                "address",
+                "latitude",
+                "longitude",
+                "status"
+              ]
             }
           }
-        }
+        },
+        "required": ["city", "stores"]
       }
     }
   },
-  "required": ["number_field_example", "string_field_example"],
-  "v-default-fields": ["number_field_example", "string_field_example"]
+  "required": ["storesForCity"]
 }

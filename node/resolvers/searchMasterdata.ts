@@ -13,8 +13,8 @@ export async function searchMasterdata(
 ) {
   return ctx.clients.getStoresFromDatamaster.searchRaw(
     { page, pageSize },
-    ['storesPerCity'],
-    'priority ASC',
+    ['storesForCity'],
+    '',
     where
   )
 }

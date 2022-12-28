@@ -1,6 +1,7 @@
 import { method } from '@vtex/api'
 import slugify from 'slugify'
 
+import { saveMasterdata } from '../resolvers/saveMasterdata'
 import { searchMasterdata } from '../resolvers/searchMasterdata'
 import { getStoreBindings } from '../utils/Binding'
 
@@ -85,6 +86,9 @@ export const resolvers = {
       }),
     ],
   },
+  Mutation: {
+    saveMasterdata,
+  },
   Query: {
     getStores: async (_: any, param: any, ctx: Context) => {
       const {
@@ -92,118 +96,106 @@ export const resolvers = {
         vtex: { logger },
       } = ctx
 
-      const APP_NAME = 'store-locator'
-      const SCHEMA_NAME = 'sitemap'
+      // const APP_NAME = 'store-locator'
+      // const SCHEMA_NAME = 'sitemap'
 
-      const saveInVbase = async () => {
-        try {
-          const res: any = await sitemap.saveIndex()
+      // const saveInVbase = async () => {
+      //   try {
+      //     const res: any = await sitemap.saveIndex()
 
-          if (res?.data?.saveIndex) {
-            await vbase.saveJSON(APP_NAME, SCHEMA_NAME, {
-              alreadyHasSitemap: true,
-            })
+      //     if (res?.data?.saveIndex) {
+      //       await vbase.saveJSON(APP_NAME, SCHEMA_NAME, {
+      //         alreadyHasSitemap: true,
+      //       })
 
-            return true
-          }
+      //       return true
+      //     }
 
-          return false
-        } catch (err) {
-          logger.error({ error: err, message: 'getStores-saveInBase-error' })
+      //     return false
+      //   } catch (err) {
+      //     logger.error({ error: err, message: 'getStores-saveInBase-error' })
 
-          return false
-        }
-      }
+      //     return false
+      //   }
+      // }
 
-      sitemap.hasSitemap().then((has: any) => {
-        if (has === false) {
-          vbase
-            .getJSON(APP_NAME, SCHEMA_NAME, true)
-            .then((getResponse: any) => {
-              const { alreadyHasSitemap = false } = getResponse ?? {}
+      // sitemap.hasSitemap().then((has: any) => {
+      //   if (has === false) {
+      //     vbase
+      //       .getJSON(APP_NAME, SCHEMA_NAME, true)
+      //       .then((getResponse: any) => {
+      //         const { alreadyHasSitemap = false } = getResponse ?? {}
 
-              !alreadyHasSitemap && saveInVbase()
-            })
-            .catch((err: any) =>
-              logger.error({ error: err, message: 'getStores-getJSON-error' })
-            )
-        }
-      })
+      //         !alreadyHasSitemap && saveInVbase()
+      //       })
+      //       .catch((err: any) =>
+      //         logger.error({ error: err, message: 'getStores-getJSON-error' })
+      //       )
+      //   }
+      // })
 
-      let result = await hub.getStores(param).catch((error) => {
-        logger.error({
-          error,
-          message: 'getStores-error',
-          param,
-        })
+      // let result = await hub.getStores(param).catch((error) => {
+      //   logger.error({
+      //     error,
+      //     message: 'getStores-error',
+      //     param,
+      //   })
 
-        return null
-      })
+      //   return null
+      // })
 
-      if (!result?.data.length && !param.keyword) {
-        result = await hub.getStores({}).catch((error) => {
-          logger.error({
-            error,
-            message: 'getStores-error',
-            param: {},
-          })
+      // if (!result?.data.length && !param.keyword) {
+      //   result = await hub.getStores({}).catch((error) => {
+      //     logger.error({
+      //       error,
+      //       message: 'getStores-error',
+      //       param: {},
+      //     })
 
-          return null
-        })
-      }
+      //     return null
+      //   })
+      // }
 
-      logger.info({ message: 'getStores', items: result })
+      // logger.info({ message: 'getStores', items: result })
 
-      // accounts for different reponse structure for Logistics _search and _searchsellers endpoints
-      const {
-        data,
-        data: { paging = { pages: 0 } },
-      } = result ?? { data: { items: [], paging: { pages: 0 } } }
+      // // accounts for different reponse structure for Logistics _search and _searchsellers endpoints
+      // const {
+      //   data,
+      //   data: { paging = { pages: 0 } },
+      // } = result ?? { data: { items: [], paging: { pages: 0 } } }
 
-      const pickuppoints = data.items ? data : { items: data }
+      // const pickuppoints = data.items ? data : { items: data }
 
-      const results = [] as any
+      // const results = [] as any
 
-      // API will return errors starting at ?page=100
-      const limitPagesTo99 = paging.pages > 99 ? 99 : paging.pages
+      // // API will return errors starting at ?page=100
+      // const limitPagesTo99 = paging.pages > 99 ? 99 : paging.pages
 
-      for (let i = 2; i <= limitPagesTo99; i++) {
-        results.push(
-          hub.getStores({ ...param, page: i }).catch((error) => {
-            logger.error({
-              error,
-              message: 'getStores-error',
-              param: { ...param, page: i },
-            })
+      // for (let i = 2; i <= limitPagesTo99; i++) {
+      //   results.push(
+      //     hub.getStores({ ...param, page: i }).catch((error) => {
+      //       logger.error({
+      //         error,
+      //         message: 'getStores-error',
+      //         param: { ...param, page: i },
+      //       })
 
-            return null
-          })
-        )
-      }
+      //       return null
+      //     })
+      //   )
+      // }
 
-      const remainingData = await Promise.all(results)
+      // const remainingData = await Promise.all(results)
 
-      remainingData.forEach((newResult: any) => {
-        pickuppoints.items.push(...newResult.data.items)
-      })
+      // remainingData.forEach((newResult: any) => {
+      //   pickuppoints.items.push(...newResult.data.items)
+      // })
 
-      // include for usage statistics
-      logger.info({ message: 'getStores', items: pickuppoints?.items?.length })
+      // // include for usage statistics
+      // logger.info({ message: 'getStores', items: pickuppoints?.items?.length })
 
       return {
-        items: pickuppoints.items
-          .map((item: any) => {
-            return {
-              ...item,
-              address: {
-                ...item.address,
-                country: item.address.acronym,
-              },
-            }
-          })
-          .filter((item: any) => {
-            return !!item.isActive
-          }),
+        city: 'Guayaquil',
       }
     },
     searchMasterdata,

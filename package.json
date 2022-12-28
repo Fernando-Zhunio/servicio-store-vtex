@@ -21,6 +21,7 @@
     ]
   },
   "devDependencies": {
+    "@playlyfe/gql": "2.6.2",
     "@types/node": "18.11.9",
     "@vtex/danger": "0.2.9",
     "@vtex/prettier-config": "0.3.6",

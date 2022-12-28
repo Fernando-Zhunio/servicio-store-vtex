@@ -4326,6 +4326,10 @@ normalize-path@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
 
+"novicompu.service-stores@https://dev--novicompu.myvtex.com/_v/private/typings/linked/v1/novicompu.service-stores@1.0.0+build1672259992/public/@types/novicompu.service-stores":
+  version "1.0.0"
+  resolved "https://dev--novicompu.myvtex.com/_v/private/typings/linked/v1/novicompu.service-stores@1.0.0+build1672259992/public/@types/novicompu.service-stores#29f4cad5ade8e7443e69bb4fe2ab2e09fc0b2ac0"
+
 npm-bundled@^1.0.1:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/npm-bundled/-/npm-bundled-1.0.6.tgz#e7ba9aadcef962bb61248f91721cd932b3fe6bdd"
@@ -5820,6 +5824,10 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+"vtex.store-sitemap@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.store-sitemap@2.14.0/public/@types/vtex.store-sitemap":
+  version "2.14.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.store-sitemap@2.14.0/public/@types/vtex.store-sitemap#ec293068c5d0e6337228c4e6d12b097754c58292"
 
 w3c-hr-time@^1.0.1:
   version "1.0.1"

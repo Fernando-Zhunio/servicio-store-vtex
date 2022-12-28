@@ -5,7 +5,12 @@
     "lib": ["dom"],
     "module": "esnext",
     "moduleResolution": "node",
-    "target": "es2019"
+    "target": "es2019",
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false
   },
   "include": ["./typings/*.d.ts", "./**/*.tsx", "./**/*.ts"]
 }

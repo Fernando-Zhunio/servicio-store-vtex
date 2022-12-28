@@ -1,0 +1,22 @@
+{
+  "schema": {
+    "files": "**/*.graphql"
+  },
+  query: {
+    files: [ /* define file paths which you'd like the gql parser to watch and give autocomplete suggestions for */
+      {
+        match: ['**/*.ts', '**/*.tsx'], // match multiple extensions
+        parser: ['EmbeddedQueryParser', { startTag: 'gql`', endTag: '`' }], // parse any query inside gql template literal
+      },
+      {
+        match: '**/*.js', // for js
+        parser: ['EmbeddedQueryParser', { startTag: 'Relay\\.QL`', endTag: '`' }], // parse Relay syntax
+        isRelay: true,
+      },
+      {
+        match: 'fixtures/**/*.gql',
+        parser: 'QueryParser',
+      },
+    ],
+  },
+}
