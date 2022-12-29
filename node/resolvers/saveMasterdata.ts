@@ -1,8 +1,3 @@
-// import { sendMessageSplunk } from '../utils/sendMessageSplunk'
-// import { validation } from '../utils/validation'
-
-import type { Store, StorePerCity } from '../interfaces/store'
-import { searchMasterdata } from './searchMasterdata'
 /*
 mutation{
   saveMasterdata(saveData:{store:{
@@ -21,67 +16,57 @@ mutation{
   }
 }
 */
+import type { Stores } from 'novicompu.service-stores'
+
+import { getStoreMasterdata } from './get-store-masterdata'
+
 export async function saveMasterdata(
   _: unknown,
-  saveValues: { saveData: { city: string; store: Store } },
+  saveValues: { saveData: { city: string; store: Stores } },
   ctx: Context
 ) {
-  // sendMessageSplunk(saveValues.saveData.type, saveValues.saveData.content, ctx)
+  try {
+    const { city, store: stores } = saveValues.saveData
+    const cityStores: any = await getStoreMasterdata(null, { id: city }, ctx)
 
-  // validation(saveValues.saveData, false)
-  // const stores = await searchMasterdata(null, {}, ctx)
+    if (!cityStores) {
+      const data = await saveStoreNow({ city, stores: [stores] }, ctx)
 
-  // const index = searchForIdStore(
-  //   stores.data,
-  //   saveValues.city,
-  //   saveValues.store.id
-  // )
+      return data
+    }
 
-  // if (index !== -1) {
-  //   stores.data.find((x) => x.city === saveValues.city).stores[index] =
-  //     saveValues.store
-  // }
-  ctx.vtex.logger.warn({ saveValues: saveValues.saveData })
+    const storeIndex = cityStores.stores.findIndex(
+      (x: any) => x.id === stores.id
+    )
 
-  // "8e8abfe3-86ff-11ed-83ab-126014eef27f
-  const { city, store: stores } = saveValues.saveData
+    if (storeIndex === -1) {
+      cityStores.stores.push(stores)
+    } else {
+      cityStores.stores[storeIndex] = stores
+    }
 
-  // const storesForCity: unknown = city
-  // 0982530072
+    const data = await saveStoreNow({ city, stores: cityStores.stores }, ctx)
 
-  return ctx.clients.getStoresFromDatamaster
-    .save({
-      storesForCity: [
-        {
-          city,
-          stores: [{ ...stores }],
-        },
-      ],
-    })
-    .catch((e) => {
-      ctx.vtex.logger.error({
-        message: 'Error to save badge through MasterdataV2',
-        name: e.name,
-        exception: e.message,
-      })
-      throw new Error(e)
-
-      // return {
-      //   Id: JSON.stringify({ storesForCity }),
-      //   DocumentId: e.name,
-      //   Href: JSON.stringify(e),
-      // }
-    })
+    return data
+  } catch (e) {
+    return {
+      Id: null,
+      DocumentId: e.message,
+      Href: null,
+    }
+  }
 }
 
-// function searchForIdStore(stores: StorePerCity[], city: string, id: string) {
-//   // eslint-disable-next-line @typescript-eslint/no-shadow
-//   const store = stores.find((store: StorePerCity) => store.city === city)
+async function saveStoreNow(
+  { city, stores }: { city: string; stores: any[] },
+  ctx: Context
+) {
+  const data = await ctx.clients.getStoresFromDatamaster.saveOrUpdate({
+    city,
+    company: ctx.vtex.account,
+    stores,
+    id: city,
+  })
 
-//   if (store) {
-//     // eslint-disable-next-line @typescript-eslint/no-shadow
-//     return store.stores.findIndex((store: Store) => store.id === id)
-//   }
-
-//   return 0
-// }
+  return data
+}

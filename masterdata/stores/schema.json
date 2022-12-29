@@ -3,56 +3,50 @@
   "title": "Stores",
   "type": "object",
   "properties": {
-    "storesForCity": {
+    "city": {
+      "type": "string"
+    },
+    "company": {
+      "type": "string"
+    },
+    "stores": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "city": {
+          "id": {
             "type": "string"
           },
-          "stores": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "schedules": {
-                  "type": "string"
-                },
-                "address": {
-                  "type": "string"
-                },
-                "latitude": {
-                  "type": "string"
-                },
-                "longitude": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "id",
-                "name",
-                "schedules",
-                "address",
-                "latitude",
-                "longitude",
-                "status"
-              ]
-            }
+          "name": {
+            "type": "string"
+          },
+          "schedules": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "string"
+          },
+          "longitude": {
+            "type": "string"
+          },
+          "status": {
+            "type": "boolean"
           }
         },
-        "required": ["city", "stores"]
+        "required": [
+          "id",
+          "name",
+          "schedules",
+          "address",
+          "latitude",
+          "longitude",
+          "status"
+        ]
       }
     }
   },
-  "required": ["storesForCity"]
+  "required": ["city", "stores"]
 }

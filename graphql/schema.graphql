@@ -1,3 +1,44 @@
+type Query {
+  searchMasterdata(page: Int, pageSize: Int, where: String): GetStoreResponse
+  getStoreMasterdata(id: String): StoreItem
+  # getStores(page: Int, pageSize: Int, where: String): GetStoreResponse
+}
+
+type Mutation {
+  saveMasterdata(saveData: SaveValues): ResponseSaveMasterdata
+  deleteStoreMasterdata(id: String): ResponseDeleteStoreMasterdata
+}
+
+# ----------- deleteStoreMasterdata
+type ResponseDeleteStoreMasterdata {
+  message: String
+  id: String
+  status: Int
+}
+
+# ----------- saveMasterdata
+type ResponseSaveMasterdata {
+  Id: String
+  DocumentId: String
+  Href: String
+}
+
+input SaveValues {
+  store: StoreItemInput
+  city: String
+}
+
+input StoreItemInput {
+  id: String
+  name: String
+  schedules: String
+  address: String
+  latitude: String
+  longitude: String
+  status: Boolean
+}
+
+# ------ searchMasterdata
 type StoreItem {
   id: String
   name: String
@@ -16,44 +57,11 @@ type PaginationValues {
 
 type StoresForCity {
   city: String
+  company: String
   store: [StoreItem]
 }
 
-type DataResponse {
-  storesForCity: [StoresForCity]
-}
-
 type GetStoreResponse {
-  data: [DataResponse]
+  data: [StoresForCity]
   pagination: PaginationValues
-}
-
-type ReturnValueSave {
-  Id: String
-  DocumentId: String
-  Href: String
-}
-
-input StoreItemInput {
-  id: String
-  name: String
-  schedules: String
-  address: String
-  latitude: String
-  longitude: String
-  status: Boolean
-}
-
-input SaveValues {
-  store: StoreItemInput
-  city: String
-}
-
-type Query {
-  searchMasterdata(page: Int, pageSize: Int, where: String): GetStoreResponse
-  getStores(page: Int, pageSize: Int, where: String): GetStoreResponse
-}
-
-type Mutation {
-  saveMasterdata(saveData: SaveValues): ReturnValueSave
 }

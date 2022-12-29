@@ -61,7 +61,11 @@ import type {
 import { Service } from '@vtex/api'
 
 import { Clients } from './clients'
-import { resolvers } from './graphql'
+import { resolvers } from './routes'
+import { deleteStoreMasterdata } from './resolvers/delete-store-masterdata'
+import { saveMasterdata } from './resolvers/saveMasterdata'
+import { searchMasterdata } from './resolvers/searchMasterdata'
+import { getStoreMasterdata } from './resolvers/get-store-masterdata'
 
 const TIMEOUT_MS = 60000
 
@@ -88,8 +92,14 @@ export default new Service<Clients, RecorderState, ParamsContext>({
   clients,
   graphql: {
     resolvers: {
-      Query: resolvers.Query,
-      Mutation: resolvers.Mutation,
+      Query: {
+        searchMasterdata,
+        getStoreMasterdata,
+      },
+      Mutation: {
+        saveMasterdata,
+        deleteStoreMasterdata,
+      },
     },
   },
   routes: resolvers.Routes,
