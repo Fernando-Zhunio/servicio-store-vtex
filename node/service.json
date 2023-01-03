@@ -1,17 +1,19 @@
 {
-  "memory": 256,
-  "ttl": 10,
-  "timeout": 2,
-  "minReplicas": 2,
-  "maxReplicas": 4,
-  "workers": 1,
+  "stack": "nodejs",
+  "memory": 512,
+  "ttl": 60,
+  "timeout": 60,
   "routes": {
     "stores": {
-      "path": "/stores/all",
+      "path": "/shops",
       "public": true
     },
     "getStore": {
-      "path": "/store/:id",
+      "path": "/shops/:id",
+      "public": true
+    },
+    "getSitemap": {
+      "path": "/sitemap/shops-locator.xml",
       "public": true
     }
   }

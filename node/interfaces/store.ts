@@ -10,5 +10,6 @@ export interface Store {
 
 export interface StorePerCity {
   city: string
+  company: string
   stores: Store[]
 }

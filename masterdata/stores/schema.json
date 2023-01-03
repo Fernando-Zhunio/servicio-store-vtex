@@ -21,7 +21,22 @@
             "type": "string"
           },
           "schedules": {
-            "type": "string"
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dayOfWeek": {
+                  "type": "string"
+                },
+                "openingTime": {
+                  "type": "string"
+                },
+                "closingTime": {
+                  "type": "string"
+                }
+              },
+              "required": ["dayOfWeek", "openingTime", "closingTime"]
+            }
           },
           "address": {
             "type": "string"

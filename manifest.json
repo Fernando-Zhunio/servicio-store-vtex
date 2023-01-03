@@ -1,7 +1,7 @@
 {
   "name": "service-stores",
   "vendor": "novicompu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Servicio de Fernando Zhunio para las tiendas",
   "description": "Gestiona las paginas de tiendas de la empresa",
   "mustUpdateAt": "2018-01-04",
@@ -20,7 +20,7 @@
   "billingOptions": {
     "type": "free",
     "support": {
-      "url": "https://support.vtex.com/hc/requests"
+      "url": "https://www.facebook.com/fzhunioreyes/"
     },
     "availableCountries": ["*"]
   },

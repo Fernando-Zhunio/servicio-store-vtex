@@ -3,11 +3,27 @@ mutation{
   saveMasterdata(saveData:{store:{
     id: "001"
     name: "tienda test"
-    schedules: "Horario de test"
+    schedules: [
+      {
+        dayOfWeek: "0"
+        openingTime: "10:00"
+        closingTime: "20:00"
+      },
+      {
+        dayOfWeek: "1"
+        openingTime: "10:00"
+        closingTime: "20:00"
+      },
+      {
+        dayOfWeek: "2"
+        openingTime: "10:00"
+        closingTime: "20:00"
+      }
+    ]
     address: "direccion de test"
     latitude: "latitud de test"
     longitude: "longitud de test"
-    status: "status de test"
+    status: true
   }, city: "guayaquil"})
   {
     Id
@@ -49,11 +65,7 @@ export async function saveMasterdata(
 
     return data
   } catch (e) {
-    return {
-      Id: null,
-      DocumentId: e.message,
-      Href: null,
-    }
+    throw new Error(e)
   }
 }
 
@@ -65,7 +77,7 @@ async function saveStoreNow(
     city,
     company: ctx.vtex.account,
     stores,
-    id: city,
+    id: `${ctx.vtex.account}-${city}`,
   })
 
   return data
