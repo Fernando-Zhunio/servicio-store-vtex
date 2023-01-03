@@ -8,6 +8,7 @@ const keysOfStore = [
   'schedules',
 ]
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function validationSaveMasterdata(data: any) {
   new Validator(data)
     .isObject()
