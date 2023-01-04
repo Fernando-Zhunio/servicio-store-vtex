@@ -13,7 +13,7 @@
     "@vtex/api": "6.45.13",
     "@vtex/test-tools": "^1.0.0",
     "@vtex/tsconfig": "^0.5.6",
-    "novicompu.service-stores": "https://dev--novicompu.myvtex.com/_v/private/typings/linked/v1/novicompu.service-stores@1.0.0+build1672332403/public/@types/novicompu.service-stores",
+    "novicompu.service-stores": "https://dev--novicompu.myvtex.com/_v/private/typings/linked/v1/novicompu.service-stores@1.0.1+build1672849818/public/@types/novicompu.service-stores",
     "typescript": "3.9.7",
     "vtex.store-sitemap": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.store-sitemap@2.14.0/public/@types/vtex.store-sitemap"
   },

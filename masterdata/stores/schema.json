@@ -63,5 +63,18 @@
       }
     }
   },
-  "required": ["city", "stores"]
+  "required": ["city", "stores"],
+  "v-security": {
+    "publicFilter": [
+      "city",
+      "company",
+      "stores.id",
+      "stores.name",
+      "stores.schedules",
+      "stores.address",
+      "stores.latitude",
+      "stores.longitude",
+      "stores.status"
+    ]
+  }
 }
