@@ -6,11 +6,11 @@
   "routes": {
     "stores": {
       "path": "/shops",
-      "public": true
+      "public": false
     },
     "getStore": {
       "path": "/shops/:id",
-      "public": true
+      "public": false
     },
     "getSitemap": {
       "path": "/sitemap/shops-locator.xml",

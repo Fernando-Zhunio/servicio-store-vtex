@@ -117,7 +117,7 @@ export const resolvers = {
             const body = await json(ctx.req)
 
             validationSaveMasterdata(body)
-            await saveMasterdata(null, body, ctx)
+            await saveMasterdata(null, { saveData: body }, ctx)
             ctx.set('Content-Type', 'application/json')
             ctx.body = { data: body, message: 'Store saved' }
             ctx.status = 201
